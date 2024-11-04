@@ -1,9 +1,6 @@
 ﻿/*
     Various helpers for UWP apps, add a new function if you need to interop between a dll and UWP calls
 */
-#define _UNICODE
-#define UNICODE
-
 #include "pch.h"
 #include "libuwp.h"
 
@@ -17,8 +14,6 @@
 
 static int width = 0;
 static int height = 0;
-
-static void* winHandle = NULL;
 
 using namespace winrt::Windows;
 using namespace winrt::Windows::ApplicationModel::Core;
@@ -41,11 +36,11 @@ void uwp_GetBundleFilePath(char* buffer, const char *filename)
 
 void uwp_GetScreenSize(int* x, int* y)
 {
-	if (width == 0) {
+    if (width == 0) {
         HdmiDisplayInformation hdi = HdmiDisplayInformation::GetForCurrentView();
         width = hdi.GetCurrentDisplayMode().ResolutionWidthInRawPixels();
         height = hdi.GetCurrentDisplayMode().ResolutionHeightInRawPixels();
-	}
+    }
 
     *x = width;
     *y = height;
@@ -58,40 +53,12 @@ float uwp_GetRefreshRate()
 
 void* uwp_GetWindowReference()
 {
-    void* ptr = reinterpret_cast<void*>(winrt::get_abi(CoreWindow::GetForCurrentThread()));
-    return ptr;
-}
-
-// Deprecated, was using static var when debugging glfw but should be okay as long as you call from main thread
-void* uwp_GetWindowHandle()
-{
-    return winHandle;
-}
-
-void uwp_SetWindowHandle(void* handle)
-{
-    winHandle = handle;
+    return reinterpret_cast<void*>(winrt::get_abi(CoreWindow::GetForCurrentThread()));
 }
 
 void uwp_ProcessEvents()
 {
     CoreWindow::GetForCurrentThread().Dispatcher().ProcessEvents(CoreProcessEventsOption::ProcessAllIfPresent);
-}
-
-int uwp_SetFullscreen()
-{
-    int width, height;
-    uwp_GetScreenSize(&width, &height);
-    Foundation::Size size(width, height); // TODO: May need DIPS conversion similar to what SDL does
-
-    ApplicationView::GetForCurrentView().TryResizeView(size);
-    return ApplicationView::GetForCurrentView().TryEnterFullScreenMode();
-}
-
-int uwp_SetWindowSize(int x, int y)
-{
-    const Size size(x, y);
-    ApplicationView::GetForCurrentView().TryResizeView(size);
 }
 
 // Register gamepad event hooks to method inside of calling program
