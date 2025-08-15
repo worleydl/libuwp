@@ -3,7 +3,8 @@
 #define LIBAPI extern "C" __declspec(dllexport)
 
 // :: Screen information
-LIBAPI void  uwp_GetScreenSize(int* x, int* y);
+LIBAPI void  uwp_GetActualSize(int* x, int* y); // Gets the display resolution
+LIBAPI void  uwp_GetScreenSize(int* x, int* y); // Gets the display resolution OR override from user
 LIBAPI float uwp_GetRefreshRate();
 LIBAPI void* uwp_GetWindowReference();
 

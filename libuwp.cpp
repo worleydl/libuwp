@@ -32,13 +32,17 @@ void uwp_GetBundleFilePath(char* buffer, const char *filename)
     sprintf_s(buffer, 256, "%s\\%s", winrt::to_string(ApplicationModel::Package::Current().InstalledPath()).c_str(), filename);
 }
 
+void uwp_GetActualSize(int* x, int* y)
+{
+    HdmiDisplayInformation hdi = HdmiDisplayInformation::GetForCurrentView();
+    *x = hdi.GetCurrentDisplayMode().ResolutionWidthInRawPixels();
+    *y = hdi.GetCurrentDisplayMode().ResolutionHeightInRawPixels();
+}
 
 void uwp_GetScreenSize(int* x, int* y)
 {
     if (width == 0) {
-        HdmiDisplayInformation hdi = HdmiDisplayInformation::GetForCurrentView();
-        width = hdi.GetCurrentDisplayMode().ResolutionWidthInRawPixels();
-        height = hdi.GetCurrentDisplayMode().ResolutionHeightInRawPixels();
+        uwp_GetActualSize(&width, &height);
     }
 
     *x = width;
