@@ -1,7 +1,6 @@
 ﻿/*
     Various helpers for UWP apps, add a new function if you need to interop between a dll and UWP calls
 */
-#include "pch.h"
 #include "libuwp.h"
 
 #include <winrt/Windows.ApplicationModel.Core.h>
