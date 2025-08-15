@@ -7,6 +7,9 @@ LIBAPI void  uwp_GetScreenSize(int* x, int* y);
 LIBAPI float uwp_GetRefreshRate();
 LIBAPI void* uwp_GetWindowReference();
 
+// By default GetScreenSize will return display resolution, but this will allow apps to override those values
+LIBAPI void  uwp_SetScreenSize(int x, int y);
+
 // :: Filepaths
 LIBAPI void uwp_GetBundlePath(char* buffer);
 LIBAPI void uwp_GetBundleFilePath(char* buffer, const char* filename);

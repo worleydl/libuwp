@@ -80,3 +80,9 @@ void uwp_RegisterGamepadCallbacks(void (*callback)(void))
     }
 
 }
+
+void uwp_SetScreenSize(int x, int y)
+{
+	width = x;
+	height = y;
+}
