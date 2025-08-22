@@ -17,5 +17,7 @@ add_library(${PROJECT_NAME} SHARED
 	libuwp.cpp
 )
 
+target_compile_definitions(${PROJECT_NAME} PRIVATE LIBUWP_EXPORTS)
+
 set_target_properties(${PROJECT_NAME} PROPERTIES VS_WINDOWS_TARGET_PLATFORM_MIN_VERSION 10.0.19041.0)
 

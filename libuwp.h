@@ -1,6 +1,14 @@
 ﻿#pragma once
 
-#define LIBAPI extern "C" __declspec(dllexport)
+#ifdef LIBUWP_EXPORTS
+#define LIBAPI __declspec(dllexport)
+#else
+#define LIBAPI __declspec(dllimport)
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // :: Screen information
 LIBAPI void  uwp_GetActualSize(int* x, int* y); // Gets the display resolution
@@ -22,3 +30,7 @@ LIBAPI void uwp_ProcessEvents();
 
 // If not using SDL or other helper you must register event callbacks to read controller input
 LIBAPI void uwp_RegisterGamepadCallbacks(void (*callback)(void));
+
+#ifdef __cplusplus
+}
+#endif
