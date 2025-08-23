@@ -3,6 +3,8 @@
 */
 #include "libuwp.h"
 
+#include <mutex>
+
 #include <winrt/Windows.ApplicationModel.Core.h>
 #include <winrt/Windows.Gaming.Input.h>
 #include <winrt/Windows.UI.Composition.h>
@@ -11,9 +13,6 @@
 #include <winrt/Windows.Graphics.Display.Core.h>
 #include <winrt/Windows.UI.ViewManagement.h>
 
-static int width = 0;
-static int height = 0;
-
 using namespace winrt::Windows;
 using namespace winrt::Windows::ApplicationModel::Core;
 using namespace winrt::Windows::Foundation;
@@ -21,6 +20,9 @@ using namespace winrt::Windows::Graphics::Display::Core;
 using namespace winrt::Windows::UI::Core;
 using namespace winrt::Windows::UI::ViewManagement;
 
+static int width = 0;
+static int height = 0;
+static std::mutex dim_mutex;
 
 void uwp_GetBundlePath(char* buffer)
 {
@@ -41,6 +43,8 @@ void uwp_GetActualSize(int* x, int* y)
 
 void uwp_GetScreenSize(int* x, int* y)
 {
+    std::lock_guard<std::mutex> lock(dim_mutex);
+
     if (width == 0) {
         uwp_GetActualSize(&width, &height);
     }
@@ -87,6 +91,9 @@ void uwp_RegisterGamepadCallbacks(void (*callback)(void))
 
 void uwp_SetScreenSize(int x, int y)
 {
-	width = x;
-	height = y;
+    // Without the mutex you can trigger some funny resizes in multithreaded apps
+    std::lock_guard<std::mutex> lock(dim_mutex);
+
+    width = x;
+    height = y;
 }
