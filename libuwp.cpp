@@ -24,6 +24,8 @@ static int width = 0;
 static int height = 0;
 static std::mutex dim_mutex;
 
+static void* corewind = nullptr;
+
 void uwp_GetBundlePath(char* buffer)
 {
     sprintf_s(buffer, 256, "%s", winrt::to_string(ApplicationModel::Package::Current().InstalledPath()).c_str());
@@ -32,6 +34,11 @@ void uwp_GetBundlePath(char* buffer)
 void uwp_GetBundleFilePath(char* buffer, const char *filename)
 {
     sprintf_s(buffer, 256, "%s\\%s", winrt::to_string(ApplicationModel::Package::Current().InstalledPath()).c_str(), filename);
+}
+
+HMODULE uwp_LoadLibrary(LPCWSTR path)
+{
+    return LoadPackagedLibrary(path, 0);
 }
 
 void uwp_GetActualSize(int* x, int* y)
@@ -58,9 +65,20 @@ float uwp_GetRefreshRate()
     return HdmiDisplayInformation::GetForCurrentView().GetCurrentDisplayMode().RefreshRate();
 }
 
-void* uwp_GetWindowReference()
+// No cache impl
+void* uwp_GetActualWindowReference()
 {
     return reinterpret_cast<void*>(winrt::get_abi(CoreWindow::GetForCurrentThread()));
+}
+
+void* uwp_GetWindowReference()
+{
+    if (!corewind)
+    {
+        corewind = uwp_GetActualWindowReference();
+    }
+
+    return corewind;
 }
 
 void uwp_ProcessEvents()
