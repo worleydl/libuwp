@@ -1,6 +1,10 @@
 ﻿#pragma once
 
+#include <functional>
+
 #define LIBAPI extern "C" __declspec(dllexport)
+
+using FilePickedCallback = void(*)(const char* path);
 
 // :: Screen information
 LIBAPI void  uwp_GetScreenSize(int* x, int* y);
@@ -11,7 +15,7 @@ LIBAPI void  uwp_SetupHDR(bool enabled);
 // :: Filepaths
 LIBAPI void uwp_GetBundlePath(char* buffer);
 LIBAPI void uwp_GetBundleFilePath(char* buffer, const char* filename);
-LIBAPI void uwp_PickAFile(char* path);
+LIBAPI void uwp_PickAFile(std::function<void(const char* path)>);
 
 // :: Events
 

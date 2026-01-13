@@ -2,7 +2,6 @@
     Various helpers for UWP apps, add a new function if you need to interop between a dll and UWP calls
 */
 
-#include "pch.h"
 #include "libuwp.h"
 
 #include <algorithm>
@@ -45,43 +44,33 @@ void uwp_GetBundleFilePath(char* buffer, const char* filename)
     sprintf_s(buffer, 256, "%s\\%s", winrt::to_string(ApplicationModel::Package::Current().InstalledPath()).c_str(), filename);
 }
 
-void uwp_PickAFile(char* buffer)
+void uwp_PickAFile(std::function<void(const char* path)> cb)
 {
-    std::promise<std::wstring> promise;
-    std::future<std::wstring> future = promise.get_future();
-
     auto dispatcher = winrt::Windows::ApplicationModel::Core::CoreApplication::MainView().CoreWindow().Dispatcher();
 
-    dispatcher.RunAsync(winrt::Windows::UI::Core::CoreDispatcherPriority::Normal, [p = std::move(promise)]() mutable {
+    dispatcher.RunAsync(winrt::Windows::UI::Core::CoreDispatcherPriority::Normal, [cb]() mutable {
         Pickers::FileOpenPicker picker;
         picker.SuggestedStartLocation(Pickers::PickerLocationId::ComputerFolder);
         picker.FileTypeFilter().Append(L"*");
 
         auto op = picker.PickSingleFileAsync();
 
-        op.Completed([p = std::move(p)](auto&& asyncInfo, auto status) mutable {
+        op.Completed([cb](auto&& asyncInfo, auto status) mutable {
             if (status == winrt::Windows::Foundation::AsyncStatus::Completed)
             {
                 auto file = asyncInfo.GetResults();
                 if (file)
                 {
-                    p.set_value(file.Path().c_str());
+                    static std::string path;
+                    auto w = file.Path();
+                    path.assign(w.begin(), w.end());
+                    cb(path.c_str());
                     return;
                 }
             }
-            // Either failed or cancelled
-            p.set_value(L"");
+	        cb(nullptr);
         });
     });
-
-    std::wstring result = future.get();
-    std::string out = "";
-
-    if (!result.empty()) {
-        out = std::string(result.begin(), result.end());
-    }
-
-    sprintf_s(buffer, 256, "%s", out.c_str());
 }
 
 void uwp_GetScreenSize(int* x, int* y)
