@@ -1,6 +1,8 @@
 ﻿#pragma once
 
+#include <filesystem>
 #include <functional>
+#include <list>
 
 #define LIBAPI extern "C" __declspec(dllexport)
 
@@ -16,6 +18,7 @@ LIBAPI void  uwp_SetupHDR(bool enabled);
 LIBAPI void uwp_GetBundlePath(char* buffer);
 LIBAPI void uwp_GetBundleFilePath(char* buffer, const char* filename);
 LIBAPI void uwp_PickAFile(std::function<void(const char* path)>);
+LIBAPI void uwp_PickMultipleFiles(std::function<void(const std::list<std::filesystem::path>)> callback);
 
 // :: Events
 

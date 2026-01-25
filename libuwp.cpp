@@ -68,7 +68,35 @@ void uwp_PickAFile(std::function<void(const char* path)> cb)
                     return;
                 }
             }
-	        cb(nullptr);
+            cb(nullptr);
+        });
+    });
+}
+
+void uwp_PickMultipleFiles(std::function<void(const std::list<std::filesystem::path>)> cb)
+{
+    auto dispatcher = winrt::Windows::ApplicationModel::Core::CoreApplication::MainView().CoreWindow().Dispatcher();
+
+    dispatcher.RunAsync(winrt::Windows::UI::Core::CoreDispatcherPriority::Normal, [cb]() mutable {
+        Pickers::FileOpenPicker picker;
+        picker.SuggestedStartLocation(Pickers::PickerLocationId::ComputerFolder);
+        picker.FileTypeFilter().Append(L"*"); // todo: This should be configurable
+
+        auto op = picker.PickMultipleFilesAsync();
+
+        op.Completed([cb](auto&& asyncInfo, auto status) mutable {
+            std::list<std::filesystem::path> paths;
+
+            if (status == winrt::Windows::Foundation::AsyncStatus::Completed)
+            {
+                auto files = asyncInfo.GetResults();
+                for (auto const& file : files) {
+                    auto widePath = file.Path();
+                    paths.emplace_back(widePath.begin(), widePath.end());
+                }
+            }
+
+            cb(paths);
         });
     });
 }
