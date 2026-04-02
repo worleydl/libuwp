@@ -150,6 +150,22 @@ void uwp_SetupHDR(bool enabled)
     }
 }
 
+void uwp_DispatchEvent(std::function<void()> func)
+{
+    auto dispatcher = winrt::Windows::ApplicationModel::Core::CoreApplication::MainView().CoreWindow().Dispatcher();
+    dispatcher.RunAsync(
+        winrt::Windows::UI::Core::CoreDispatcherPriority::Normal,
+        winrt::Windows::UI::Core::DispatchedHandler([func]() {
+            func();
+        })
+    );
+}
+
+void uwp_ProcessEventsPending()
+{
+    winrt::Windows::ApplicationModel::Core::CoreApplication::MainView().CoreWindow().Dispatcher().ProcessEvents(CoreProcessEventsOption::ProcessOneAndAllPending);
+}
+
 void uwp_ProcessEvents()
 {
     winrt::Windows::ApplicationModel::Core::CoreApplication::MainView().CoreWindow().Dispatcher().ProcessEvents(CoreProcessEventsOption::ProcessAllIfPresent);

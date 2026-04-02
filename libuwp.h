@@ -22,8 +22,11 @@ LIBAPI void uwp_PickMultipleFiles(std::function<void(const std::list<std::filesy
 
 // :: Events
 
+LIBAPI void uwp_DispatchEvent(std::function<void()> func);
+
 // If not using SDL or other helper you must occasionally call this to get anything to show on screen
 LIBAPI void uwp_ProcessEvents();
+LIBAPI void uwp_ProcessEventsPending();
 
 // If not using SDL or other helper you must register event callbacks to read controller input
 LIBAPI void uwp_RegisterGamepadCallbacks(void (*callback)(void));
