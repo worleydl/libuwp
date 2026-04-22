@@ -6,6 +6,7 @@
 LIBAPI void  uwp_GetActualSize(int* x, int* y); // Gets the display resolution
 LIBAPI void  uwp_GetScreenSize(int* x, int* y); // Gets the display resolution OR override from user
 LIBAPI float uwp_GetRefreshRate();
+LIBAPI void* uwp_GetActualWindowReference();
 LIBAPI void* uwp_GetWindowReference();
 
 // By default GetScreenSize will return display resolution, but this will allow apps to override those values
@@ -22,3 +23,7 @@ LIBAPI void uwp_ProcessEvents();
 
 // If not using SDL or other helper you must register event callbacks to read controller input
 LIBAPI void uwp_RegisterGamepadCallbacks(void (*callback)(void));
+
+// :: Basic app support
+extern int (*UWPAppEntryPoint)();
+LIBAPI int uwp_main(int mainFunc());

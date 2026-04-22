@@ -11,6 +11,8 @@
 #include <winrt/Windows.Graphics.Display.Core.h>
 #include <winrt/Windows.UI.ViewManagement.h>
 
+void* winref = 0;
+
 static int width = 0;
 static int height = 0;
 
@@ -54,9 +56,18 @@ float uwp_GetRefreshRate()
     return HdmiDisplayInformation::GetForCurrentView().GetCurrentDisplayMode().RefreshRate();
 }
 
+
+void* uwp_GetActualWindowReference() {
+    return reinterpret_cast<void*>(winrt::get_abi(CoreWindow::GetForCurrentThread()));
+}
+
 void* uwp_GetWindowReference()
 {
-    return reinterpret_cast<void*>(winrt::get_abi(CoreWindow::GetForCurrentThread()));
+    if (!winref) {
+        winref = uwp_GetActualWindowReference();
+    }
+
+    return winref;
 }
 
 void uwp_ProcessEvents()

@@ -13,9 +13,14 @@ endif()
 project(libuwp LANGUAGES CXX)
 set_directory_properties(PROPERTIES VS_STARTUP_PROJECT ${PROJECT_NAME})
 
-add_library(${PROJECT_NAME} SHARED
-	libuwp.cpp
+add_library(libuwp SHARED
+	src/app.cpp
+	src/libuwp.cpp
 )
 
-set_target_properties(${PROJECT_NAME} PROPERTIES VS_WINDOWS_TARGET_PLATFORM_MIN_VERSION 10.0.19041.0)
+target_compile_options(libuwp PRIVATE /ZW)
+
+target_include_directories(libuwp PRIVATE ${CMAKE_SOURCE_DIR}/include)
+
+set_target_properties(libuwp PROPERTIES VS_WINDOWS_TARGET_PLATFORM_MIN_VERSION 10.0.19041.0)
 
