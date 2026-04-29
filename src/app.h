@@ -31,6 +31,10 @@ namespace uwpapp
 		void OnOrientationChanged(Windows::Graphics::Display::DisplayInformation^ sender, Platform::Object^ args);
 		void OnDisplayContentsInvalidated(Windows::Graphics::Display::DisplayInformation^ sender, Platform::Object^ args);
 
+		// Input events
+		// todo: character events for keyboard support
+		void OnBackButtonPressed(Platform::Object^ sender, Windows::UI::Core::BackRequestedEventArgs^ args);
+
 	private:
 		bool m_windowClosed;
 		bool m_windowVisible;

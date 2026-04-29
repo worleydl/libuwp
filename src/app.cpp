@@ -77,6 +77,9 @@ void App::SetWindow(CoreWindow^ window)
 
 	DisplayInformation::DisplayContentsInvalidated +=
 		ref new TypedEventHandler<DisplayInformation^, Object^>(this, &App::OnDisplayContentsInvalidated);
+
+	Windows::UI::Core::SystemNavigationManager::GetForCurrentView()->BackRequested +=
+		ref new EventHandler<BackRequestedEventArgs^>(this, &App::OnBackButtonPressed);
 }
 
 // Initializes scene resources, or loads a previously saved app state.
@@ -159,3 +162,8 @@ void App::OnDisplayContentsInvalidated(DisplayInformation^ sender, Object^ args)
 {
 }
 
+void App::OnBackButtonPressed(Platform::Object^ sender, Windows::UI::Core::BackRequestedEventArgs^ args)
+{
+	// Don't exit app on B press
+	args->Handled = true;
+}
