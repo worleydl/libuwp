@@ -15,6 +15,7 @@ set_directory_properties(PROPERTIES VS_STARTUP_PROJECT ${PROJECT_NAME})
 
 add_library(libuwp SHARED
 	src/app.cpp
+	src/d3duwp.cpp
 	src/libuwp.cpp
 )
 

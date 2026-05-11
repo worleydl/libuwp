@@ -34,6 +34,11 @@ void uwp_GetBundleFilePath(char* buffer, const char *filename)
     sprintf_s(buffer, 256, "%s\\%s", winrt::to_string(ApplicationModel::Package::Current().InstalledPath()).c_str(), filename);
 }
 
+HMODULE uwp_LoadLibrary(LPCWSTR path)
+{
+  return LoadPackagedLibrary(path, 0);
+}
+
 void uwp_GetActualSize(int* x, int* y)
 {
     HdmiDisplayInformation hdi = HdmiDisplayInformation::GetForCurrentView();
